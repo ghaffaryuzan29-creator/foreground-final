@@ -1,8 +1,0 @@
-{
-  "rewrites": [
-    {
-      "source": "/promo",
-      "destination": "/promo/index.html"
-    }
-  ]
-}
