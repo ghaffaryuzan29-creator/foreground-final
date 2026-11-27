@@ -374,14 +374,26 @@
               <sc-if value="{{ errKecamatan }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;color:#F2A8A0;">{{ errKecamatan }}</div></sc-if>
             </div>
           </div>
-          <div style="display:flex;flex-direction:column;gap:6px;min-width:0;">
-            <label style="font-size:12px;font-weight:700;color:#F5F2E9cc;letter-spacing:0.06em;">LEVEL MAIN</label>
-            <sc-raw-select value="{{ level }}" sc-camel-on-change="{{ onLevel }}" style="background:#2B1A3F;border:1px solid #F5F2E933;color:#F5F2E9;padding:12px 10px;border-radius:2px;font-size:16px;outline:none;width:100%;min-width:0;">
-              <option value="" style="background:#2B1A3F;">Pilih level</option>
-              <sc-for list="{{ levelList }}" as="c" hint-placeholder-count="5">
-                <option value="{{ c }}" style="background:#2B1A3F;">{{ c }}</option>
-              </sc-for>
-            </sc-raw-select>
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;">
+            <div style="display:flex;flex-direction:column;gap:6px;min-width:0;">
+              <label style="font-size:12px;font-weight:700;color:#F5F2E9cc;letter-spacing:0.06em;">CABANG</label>
+              <sc-raw-select value="{{ cabang }}" sc-camel-on-change="{{ onCabang }}" style="background:#2B1A3F;border:1px solid #F5F2E933;color:#F5F2E9;padding:12px 10px;border-radius:2px;font-size:16px;outline:none;width:100%;min-width:0;">
+                <option value="" style="background:#2B1A3F;">Pilih cabang</option>
+                <sc-for list="{{ cabangList }}" as="c" hint-placeholder-count="5">
+                  <option value="{{ c }}" style="background:#2B1A3F;">{{ c }}</option>
+                </sc-for>
+              </sc-raw-select>
+              <sc-if value="{{ errCabang }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;color:#F2A8A0;">{{ errCabang }}</div></sc-if>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px;min-width:0;">
+              <label style="font-size:12px;font-weight:700;color:#F5F2E9cc;letter-spacing:0.06em;">LEVEL MAIN</label>
+              <sc-raw-select value="{{ level }}" sc-camel-on-change="{{ onLevel }}" style="background:#2B1A3F;border:1px solid #F5F2E933;color:#F5F2E9;padding:12px 10px;border-radius:2px;font-size:16px;outline:none;width:100%;min-width:0;">
+                <option value="" style="background:#2B1A3F;">Pilih level</option>
+                <sc-for list="{{ levelList }}" as="c" hint-placeholder-count="5">
+                  <option value="{{ c }}" style="background:#2B1A3F;">{{ c }}</option>
+                </sc-for>
+              </sc-raw-select>
+            </div>
           </div>
           <div style="display:flex;flex-direction:column;gap:6px;">
             <label style="font-size:12px;font-weight:700;color:#F5F2E9cc;letter-spacing:0.06em;">PROMO</label>
@@ -410,7 +422,7 @@
             <sc-if value="{{ isTrial }}" hint-placeholder-val="{{ true }}">
             <div style="width:100%;background:#DCE66B;color:#2B1A3F;border-radius:6px;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:stretch;">
               <div style="padding:16px 18px;text-align:left;display:flex;flex-direction:column;gap:4px;border-right:2px dashed #2B1A3F55;">
-                <span style="font-size:11px;font-weight:700;letter-spacing:0.1em;">{{ promoLabel }}</span>
+                <span style="font-size:11px;font-weight:700;letter-spacing:0.1em;">{{ promoLabel }} · {{ cabangUpper }}</span>
                 <span style="font-family:'Optima',sans-serif;font-weight:700;font-size:24px;letter-spacing:0.06em;">{{ code }}</span>
                 <span style="font-size:11px;font-weight:600;">Berlaku sampai {{ codeExpiry }}</span>
               </div>
@@ -754,6 +766,7 @@ class Component extends DCLogic {
       `Nama: ${s.nama.trim()}`,
       `No. WA: ${s.wa.trim()}`,
       `Domisili: ${this.domisiliText()}`,
+      `Cabang: ${s.cabang}`,
       `Level main: ${s.level || '-'}`,
       `Pertanyaan: ${free || '-'}`
     ];
@@ -775,6 +788,7 @@ class Component extends DCLogic {
     else if (!/^(08|628)\d{7,12}$/.test(digits)) errors.wa = 'Gunakan format 08xx atau 62xx.';
     if (!s.kota) errors.kota = 'Pilih kota domisili.';
     else if (s.kota !== this.LUAR && !s.kecamatan) errors.kecamatan = 'Pilih kecamatan.';
+    if (!s.cabang) errors.cabang = 'Pilih cabang.';
     if (Object.keys(errors).length) { this.setState({ errors }); return; }
     if (s.sending) return;
     const code = s.promo === 'Trial 20%' ? this.VOUCHER : '';
@@ -872,10 +886,14 @@ class Component extends DCLogic {
         const url = u.split('?')[0].replace(/\/?$/, '/');
         return { url, embed: url + 'embed', label: `REEL 0${i + 1}`, cropTop: 55, cropTotal: 55 + 190 };
       }),
-      nama: s.nama, wa: s.wa, pesan: s.pesan,
+      nama: s.nama, wa: s.wa, cabang: s.cabang, pesan: s.pesan,
       onNama: e => this.setState({ nama: e.target.value }),
       onWa: e => this.setState({ wa: e.target.value }),
+      cabangUpper: (s.cabang || '').toUpperCase(),
       kota: s.kota, kecamatan: s.kecamatan,
+      onCabang: e => this.setState({ cabang: e.target.value }),
+      cabangList: ['Kemang', 'Pluit', 'Sunter', 'Bintaro'],
+      errCabang: s.errors.cabang || '',
       onKota: e => this.setState({ kota: e.target.value, kecamatan: '' }),
       onKecamatan: e => this.setState({ kecamatan: e.target.value }),
       kotaList: [...Object.keys(this.DOMISILI), this.LUAR],
