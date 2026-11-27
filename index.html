@@ -797,7 +797,7 @@ class Component extends DCLogic {
     this.setState({ errors: {}, sending: true, code, copied: false });
     const payload = { kode: code, nama: s.nama.trim(), wa: digits, kota: s.kota, kecamatan: s.kecamatan || '', domisili: this.domisiliText(), cabang: s.cabang, level: s.level || '', promo: s.promo, pertanyaan: s.pesan.trim(), sumber: location.href,
       ...(this.utm || {}), event_id: eid, fbp: this._cookie('_fbp'), fbc: this._cookie('_fbc'), ua: navigator.userAgent };
-    this.track('Lead', { content_name: s.promo, content_category: s.kota }, eid);
+    this.track('Lead', { content_name: s.promo, content_category: s.cabang }, eid);
     const save = this.SHEET_URL
       ? Promise.race([fetch(this.SHEET_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) }).catch(() => {}), new Promise(r => setTimeout(r, 3000))])
       : new Promise(r => setTimeout(r, 600));
