@@ -354,6 +354,28 @@
           </div>
           <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;">
             <div style="display:flex;flex-direction:column;gap:6px;min-width:0;">
+              <label style="font-size:12px;font-weight:700;color:#F5F2E9cc;letter-spacing:0.06em;">DOMISILI</label>
+              <sc-raw-select value="{{ kota }}" sc-camel-on-change="{{ onKota }}" style="background:#2B1A3F;border:1px solid #F5F2E933;color:#F5F2E9;padding:12px 10px;border-radius:2px;font-size:16px;outline:none;width:100%;min-width:0;">
+                <option value="" style="background:#2B1A3F;">Pilih kota</option>
+                <sc-for list="{{ kotaList }}" as="c" hint-placeholder-count="5">
+                  <option value="{{ c }}" style="background:#2B1A3F;">{{ c }}</option>
+                </sc-for>
+              </sc-raw-select>
+              <sc-if value="{{ errKota }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;color:#F2A8A0;">{{ errKota }}</div></sc-if>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px;min-width:0;">
+              <label style="font-size:12px;font-weight:700;color:#F5F2E9cc;letter-spacing:0.06em;">KECAMATAN</label>
+              <sc-raw-select value="{{ kecamatan }}" sc-camel-on-change="{{ onKecamatan }}" style="background:#2B1A3F;border:1px solid #F5F2E933;color:#F5F2E9;padding:12px 10px;border-radius:2px;font-size:16px;outline:none;width:100%;min-width:0;opacity:{{ kecOpacity }};">
+                <option value="" style="background:#2B1A3F;">{{ kecPlaceholder }}</option>
+                <sc-for list="{{ kecList }}" as="c" hint-placeholder-count="5">
+                  <option value="{{ c }}" style="background:#2B1A3F;">{{ c }}</option>
+                </sc-for>
+              </sc-raw-select>
+              <sc-if value="{{ errKecamatan }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;color:#F2A8A0;">{{ errKecamatan }}</div></sc-if>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;">
+            <div style="display:flex;flex-direction:column;gap:6px;min-width:0;">
               <label style="font-size:12px;font-weight:700;color:#F5F2E9cc;letter-spacing:0.06em;">CABANG TERDEKAT</label>
               <sc-raw-select value="{{ cabang }}" sc-camel-on-change="{{ onCabang }}" style="background:#2B1A3F;border:1px solid #F5F2E933;color:#F5F2E9;padding:12px 10px;border-radius:2px;font-size:16px;outline:none;width:100%;min-width:0;">
                 <option value="" style="background:#2B1A3F;">Pilih cabang</option>
@@ -510,8 +532,26 @@ class Component extends DCLogic {
   T_SANTAI = 'Seru-seruan bareng pasangan/teman';
   T_SERIUS = 'Latihan serius';
 
+  LUAR = 'Luar Jabodetabek';
+  DOMISILI = {
+    'Jakarta Selatan': ['Cilandak','Jagakarsa','Kebayoran Baru','Kebayoran Lama','Mampang Prapatan','Pancoran','Pasar Minggu','Pesanggrahan','Setiabudi','Tebet'],
+    'Jakarta Pusat': ['Cempaka Putih','Gambir','Johar Baru','Kemayoran','Menteng','Sawah Besar','Senen','Tanah Abang'],
+    'Jakarta Barat': ['Cengkareng','Grogol Petamburan','Kalideres','Kebon Jeruk','Kembangan','Palmerah','Taman Sari','Tambora'],
+    'Jakarta Utara': ['Cilincing','Kelapa Gading','Koja','Pademangan','Penjaringan','Tanjung Priok'],
+    'Jakarta Timur': ['Cakung','Cipayung','Ciracas','Duren Sawit','Jatinegara','Kramat Jati','Makasar','Matraman','Pasar Rebo','Pulo Gadung'],
+    'Kepulauan Seribu': ['Kepulauan Seribu Selatan','Kepulauan Seribu Utara'],
+    'Kota Tangerang Selatan': ['Ciputat','Ciputat Timur','Pamulang','Pondok Aren','Serpong','Serpong Utara','Setu'],
+    'Kota Tangerang': ['Batuceper','Benda','Cibodas','Ciledug','Cipondoh','Jatiuwung','Karangtengah','Karawaci','Larangan','Neglasari','Periuk','Pinang','Tangerang'],
+    'Kabupaten Tangerang': ['Balaraja','Cikupa','Cisauk','Cisoka','Curug','Gunung Kaler','Jambe','Jayanti','Kelapa Dua','Kemiri','Kosambi','Kresek','Kronjo','Legok','Mauk','Mekar Baru','Pagedangan','Pakuhaji','Panongan','Pasar Kemis','Rajeg','Sepatan','Sepatan Timur','Sindang Jaya','Solear','Sukadiri','Sukamulya','Teluknaga','Tigaraksa'],
+    'Kota Depok': ['Beji','Bojongsari','Cilodong','Cimanggis','Cinere','Cipayung','Limo','Pancoran Mas','Sawangan','Sukmajaya','Tapos'],
+    'Kota Bekasi': ['Bantargebang','Bekasi Barat','Bekasi Selatan','Bekasi Timur','Bekasi Utara','Jatiasih','Jatisampurna','Medan Satria','Mustika Jaya','Pondok Gede','Pondok Melati','Rawalumbu'],
+    'Kabupaten Bekasi': ['Babelan','Bojongmangu','Cabangbungin','Cibarusah','Cibitung','Cikarang Barat','Cikarang Pusat','Cikarang Selatan','Cikarang Timur','Cikarang Utara','Karangbahagia','Kedungwaringin','Muara Gembong','Pebayuran','Serang Baru','Setu','Sukakarya','Sukatani','Sukawangi','Tambelang','Tambun Selatan','Tambun Utara','Tarumajaya'],
+    'Kota Bogor': ['Bogor Barat','Bogor Selatan','Bogor Tengah','Bogor Timur','Bogor Utara','Tanah Sareal'],
+    'Kabupaten Bogor': ['Babakan Madang','Bojonggede','Caringin','Cariu','Ciampea','Ciawi','Cibinong','Cibungbulang','Cigombong','Cigudeg','Cijeruk','Cileungsi','Ciomas','Cisarua','Ciseeng','Citeureup','Dramaga','Gunung Putri','Gunung Sindur','Jasinga','Jonggol','Kemang','Klapanunggal','Leuwiliang','Leuwisadeng','Megamendung','Nanggung','Pamijahan','Parung','Parung Panjang','Rancabungur','Rumpin','Sukajaya','Sukamakmur','Sukaraja','Tajurhalang','Tamansari','Tanjungsari','Tenjo','Tenjolaya'],
+  };
+
   state = {
-    nama: '', wa: '', cabang: '', promo: 'Trial 20%',
+    nama: '', wa: '', kota: '', kecamatan: '', cabang: '', promo: 'Trial 20%',
     level: '', pesan: '',
     errors: {}, submitted: false, code: '', count: 3, openFaq: 0,
   };
@@ -725,12 +765,18 @@ class Component extends DCLogic {
         : [`Halo Foreground, saya tertarik top up saldo membership dengan bonus saldo up to 20%. Boleh info pilihan nominal top up dan cara daftarnya?`, ``]),
       `Nama: ${s.nama.trim()}`,
       `No. WA: ${s.wa.trim()}`,
+      `Domisili: ${this.domisiliText()}`,
       `Cabang: ${s.cabang}`,
       `Level main: ${s.level || '-'}`,
       `Pertanyaan: ${free || '-'}`
     ];
     const num = this.WA_PUSAT;
     return `https://wa.me/${num}?text=${encodeURIComponent(lines.join('\n'))}`;
+  }
+
+  domisiliText() {
+    const s = this.state;
+    return s.kecamatan ? `${s.kecamatan}, ${s.kota}` : (s.kota || '-');
   }
 
   submit = () => {
@@ -740,6 +786,8 @@ class Component extends DCLogic {
     const digits = s.wa.replace(/\D/g, '');
     if (!digits) errors.wa = 'Nomor WhatsApp wajib diisi.';
     else if (!/^(08|628)\d{7,12}$/.test(digits)) errors.wa = 'Gunakan format 08xx atau 62xx.';
+    if (!s.kota) errors.kota = 'Pilih kota domisili.';
+    else if (s.kota !== this.LUAR && !s.kecamatan) errors.kecamatan = 'Pilih kecamatan.';
     if (!s.cabang) errors.cabang = 'Pilih cabang terdekat.';
     if (Object.keys(errors).length) { this.setState({ errors }); return; }
     if (s.sending) return;
@@ -747,7 +795,7 @@ class Component extends DCLogic {
     const eid = 'FG' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
     this.eid = eid;
     this.setState({ errors: {}, sending: true, code, copied: false });
-    const payload = { kode: code, nama: s.nama.trim(), wa: digits, cabang: s.cabang, level: s.level || '', promo: s.promo, pertanyaan: s.pesan.trim(), sumber: location.href,
+    const payload = { kode: code, nama: s.nama.trim(), wa: digits, kota: s.kota, kecamatan: s.kecamatan || '', domisili: this.domisiliText(), cabang: s.cabang, level: s.level || '', promo: s.promo, pertanyaan: s.pesan.trim(), sumber: location.href,
       ...(this.utm || {}), event_id: eid, fbp: this._cookie('_fbp'), fbc: this._cookie('_fbc'), ua: navigator.userAgent };
     this.track('Lead', { content_name: s.promo, content_category: s.cabang }, eid);
     const save = this.SHEET_URL
@@ -842,6 +890,14 @@ class Component extends DCLogic {
       onNama: e => this.setState({ nama: e.target.value }),
       onWa: e => this.setState({ wa: e.target.value }),
       onCabang: e => this.setState({ cabang: e.target.value }),
+      kota: s.kota, kecamatan: s.kecamatan,
+      onKota: e => this.setState({ kota: e.target.value, kecamatan: '' }),
+      onKecamatan: e => this.setState({ kecamatan: e.target.value }),
+      kotaList: [...Object.keys(this.DOMISILI), this.LUAR],
+      kecList: this.DOMISILI[s.kota] || [],
+      kecPlaceholder: !s.kota ? 'Pilih kota dulu' : (s.kota === this.LUAR ? '—' : 'Pilih kecamatan'),
+      kecOpacity: this.DOMISILI[s.kota] ? 1 : 0.5,
+      errKota: s.errors.kota || '', errKecamatan: s.errors.kecamatan || '',
       onPesan: e => this.setState({ pesan: e.target.value }),
       level: s.level, onLevel: e => this.setState({ level: e.target.value }),
       levelList: ['Belum pernah', 'Beginner', 'Intermediate', 'Advance', 'Pro'],
